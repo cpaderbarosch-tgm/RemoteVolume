@@ -1,0 +1,5 @@
+D:\jinga\Projekte\C#\RemoteVolume\Server\obj\Debug\Server.csprojResolveAssemblyReference.cache
+D:\jinga\Projekte\C#\RemoteVolume\Server\obj\Debug\App.g.cs
+D:\jinga\Projekte\C#\RemoteVolume\Server\obj\Debug\Server_MarkupCompile.cache
+D:\jinga\Projekte\C#\RemoteVolume\Server\obj\Debug\Server.Properties.Resources.resources
+D:\jinga\Projekte\C#\RemoteVolume\Server\obj\Debug\Server.csproj.GenerateResource.Cache

@@ -1,0 +1,10 @@
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\bin\Debug\RVServer.exe.config
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\bin\Debug\RVServer.exe
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\bin\Debug\RVServer.pdb
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\obj\Debug\App.g.cs
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\obj\Debug\RVServer_MarkupCompile.cache
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\obj\Debug\RVServer.Properties.Resources.resources
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\obj\Debug\RVServer.csproj.GenerateResource.Cache
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\obj\Debug\RVServer.exe
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\obj\Debug\RVServer.pdb
+D:\jinga\Projekte\C#\RemoteVolume\RVServer\obj\Debug\RVServer.csprojResolveAssemblyReference.cache
