@@ -22,6 +22,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (server != null && server.isConnected()) {
+            out.println("disconnected");
+        }
+    }
+
     public void connect(View view) {
         new Thread()
         {
@@ -40,8 +49,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void send(View view) {
-        EditText command = (EditText) findViewById(R.id.command);
+        if (server != null && server.isConnected()) {
+            EditText command = (EditText) findViewById(R.id.command);
 
-        out.println(command.getText().toString());
+            out.println(command.getText().toString());
+        }
     }
 }
