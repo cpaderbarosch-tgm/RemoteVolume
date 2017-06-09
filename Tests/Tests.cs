@@ -10,7 +10,7 @@ namespace RemoteVolume.Tests
         [TestMethod]
         public void ChangeVolume()
         {
-            VolumeControl.Do(JsonConvert.SerializeObject(new Command(Server.Action.ChangeVolume, 10, "System Sounds")));
+            Logic.Do(JsonConvert.SerializeObject(new Command(Server.Action.ChangeVolume, 10, "System Sounds")));
 
             Assert.AreEqual(10, VolumeControl.GetApplicationVolume("System Sounds"));
         }

@@ -2,7 +2,7 @@
 
 namespace RemoteVolume.Server
 {
-    class Logic
+    public class Logic
     {
         public static void Do(string json)
         {

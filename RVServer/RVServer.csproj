@@ -61,6 +61,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Logic.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>
