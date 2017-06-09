@@ -25,7 +25,7 @@ namespace RemoteVolume.Server
                     {
                         new Thread(() =>
                         {
-                            Logic.Do(command);
+                            VolumeControl.Do(command);
                         }).Start();
                     }
                 }

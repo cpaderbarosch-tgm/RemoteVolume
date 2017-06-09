@@ -21,12 +21,6 @@ namespace RemoteVolume.Server
 
         #endregion
 
-        #region Constructors
-
-        public Server() {}
-
-        #endregion
-
         #region General Functions
 
         public bool Start()
