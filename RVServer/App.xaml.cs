@@ -16,16 +16,18 @@ namespace RemoteVolume.Server
             if (_server.Start())
             {
                 _server.Accept();
+                Console.WriteLine("Accepted");
 
                 while (_server.Online)
                 {
                     string command = _server.Receive();
+                    Console.WriteLine("Received");
 
                     if (command != "" && command != Environment.NewLine)
                     {
                         new Thread(() =>
                         {
-                            VolumeControl.Do(command);
+                            Logic.Do(command);
                         }).Start();
                     }
                 }

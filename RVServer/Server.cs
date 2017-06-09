@@ -15,6 +15,9 @@ namespace RemoteVolume.Server
         private bool _online = false;
         public bool Online { get => _online; }
 
+        private bool _userConnected = false;
+        public bool UserConnected { get => _userConnected; }
+
         private const int PORT = 3131;
         private const int BUFFER_SIZE = 2048;
         private byte[] buffer = new byte[BUFFER_SIZE];
@@ -62,6 +65,7 @@ namespace RemoteVolume.Server
         public void Accept()
         {
             _client = _socket.Accept();
+            _userConnected = true;
         }
 
         public string Receive()
