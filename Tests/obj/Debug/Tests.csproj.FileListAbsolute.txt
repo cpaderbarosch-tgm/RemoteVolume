@@ -1,0 +1,17 @@
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Tests.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Tests.pdb
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Newtonsoft.Json.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\RVServer.exe
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\RVServer.pdb
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\RVServer.exe.config
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+D:\jinga\Projekte\C#\RemoteVolume\Tests\bin\Debug\Newtonsoft.Json.xml
+D:\jinga\Projekte\C#\RemoteVolume\Tests\obj\Debug\Tests.csprojResolveAssemblyReference.cache
+D:\jinga\Projekte\C#\RemoteVolume\Tests\obj\Debug\Tests.dll
+D:\jinga\Projekte\C#\RemoteVolume\Tests\obj\Debug\Tests.pdb
