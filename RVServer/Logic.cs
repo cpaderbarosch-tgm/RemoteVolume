@@ -3,13 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
-namespace RVServer
+namespace RemoteVolume.Server
 {
-    static class Logic
+    public static class Logic
     {
         public static void Do(string json)
         {
-            Command command = (Command) JsonConvert.DeserializeObject(json);
+            Command command = JsonConvert.DeserializeObject<Command>(json);
 
             switch (command.Action)
             {
@@ -232,10 +232,18 @@ namespace RVServer
         }
     }
 
-    class Command
+    public class Command
     {
         public Action Action { get; set; }
-        public int Volume { get => Volume; set { if (value >= 0 && value <= 100) Volume = value; } }
+
+        private int _volume;
+        public int Volume {
+            get => _volume;
+            set {
+                if (value >= 0 && value <= 100) _volume = value;
+            }
+        }
+
         public string App { get; set; }
 
         public Command(Action Action, int Volume, string App)
@@ -246,7 +254,7 @@ namespace RVServer
         }
     }
 
-    enum Action
+    public enum Action
     {
         ChangeVolume,
         ToggleMute,

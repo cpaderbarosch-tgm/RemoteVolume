@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0BB40A85-274A-4981-AFAE-741A20692AA4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>RVServer</RootNamespace>
+    <RootNamespace>RemoteVolume.Server</RootNamespace>
     <AssemblyName>RVServer</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

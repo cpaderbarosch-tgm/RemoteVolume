@@ -1,7 +1,7 @@
-﻿<Application x:Class="RVServer.App"
+﻿<Application x:Class="RemoteVolume.Server.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:RVServer"
+             xmlns:local="clr-namespace:RemoteVolume.Server"
              Startup="Application_Startup"
              Exit="Application_Exit">
     <Application.Resources>

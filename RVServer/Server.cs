@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace RVServer
+namespace RemoteVolume.Server
 {
     public class Server
     {

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Threading;
 using System.Windows;
 
-namespace RVServer
+namespace RemoteVolume.Server
 {
     public partial class App : Application
     {
