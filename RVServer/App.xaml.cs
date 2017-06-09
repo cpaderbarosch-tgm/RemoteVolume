@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿#define DEBUG
+
+using Newtonsoft.Json;
 using System;
 using System.Threading;
 using System.Windows;
@@ -11,27 +13,43 @@ namespace RemoteVolume.Server
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            _server = new Server();
-
-            if (_server.Start())
+            new Thread(() =>
             {
-                _server.Accept();
-                Console.WriteLine("Accepted");
+                _server = new Server();
 
-                while (_server.Online)
+                int startCounter = 0;
+
+                while (startCounter <= 10)
                 {
-                    string command = _server.Receive();
-                    Console.WriteLine("Received");
-
-                    if (command != "" && command != Environment.NewLine)
+                    if (_server.Start())
                     {
-                        new Thread(() =>
+                        do
                         {
-                            Logic.Do(command);
-                        }).Start();
+                            _server.Accept();
+
+                            while (_server.UserConnected)
+                            {
+                                string command = _server.Receive();
+
+                                if (command != null)
+                                {
+                                    new Thread(() =>
+                                    {
+                                        Logic.Do(command);
+                                    }).Start();
+                                }
+                            }
+                        } while (_server.Online);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Server Start failed - Attempt " + ++startCounter);
                     }
                 }
-            }
+
+                Console.WriteLine("Shutting down application");
+                this.Shutdown();
+            }).Start();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

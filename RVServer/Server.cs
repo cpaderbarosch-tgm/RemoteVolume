@@ -64,18 +64,36 @@ namespace RemoteVolume.Server
 
         public void Accept()
         {
+#if DEBUG
+            Console.WriteLine("Accepted a user");
+#endif
+
             _client = _socket.Accept();
             _userConnected = true;
         }
 
         public string Receive()
         {
-            int received = _client.Receive(buffer, 0, BUFFER_SIZE, SocketFlags.None);
+#if DEBUG
+            Console.WriteLine("Received a message");
+#endif
 
-            byte[] recBuf = new byte[received];
-            Array.Copy(buffer, recBuf, received);
+            int recv_count = _client.Receive(buffer, 0, BUFFER_SIZE, SocketFlags.None);
 
-            return Encoding.ASCII.GetString(recBuf);
+            byte[] recvBuf = new byte[recv_count];
+            Array.Copy(buffer, recvBuf, recv_count);
+
+            string received = Encoding.ASCII.GetString(recvBuf);
+
+            if (received == "disconnect")
+            {
+                _userConnected = false;
+                return null;
+            } else if (received == "" || received == Environment.NewLine) {
+                return null;
+            }
+
+            return received;
         }
 
         #endregion
