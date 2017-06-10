@@ -30,15 +30,30 @@ namespace RemoteVolume.Server
         {
             if (!_online)
             {
-                _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                _socket.Bind(new IPEndPoint(IPAddress.Any, PORT));
-                _socket.Listen(10);
+                int startCounter = 0;
 
-                _online = true;
+                while (startCounter <= 10)
+                {
+                    try
+                    {
+                        _socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                        _socket.Bind(new IPEndPoint(IPAddress.Any, PORT));
+                        _socket.Listen(10);
 
-                Console.WriteLine(String.Format("Server running at {0}:{1}", IPAddress.Any.ToString(), PORT));
+                        _online = true;
 
-                return true;
+                        Log(String.Format("Server running at {0}:{1}", IPAddress.Any.ToString(), PORT));
+
+                        return true;
+                    }
+                    catch (SocketException)
+                    {
+                        Log("Server Start failed - Attempt " + ++startCounter);
+                    }
+                }
+
+                Log("Starting Server failed");
+                return false;
             }
             else
             {
@@ -50,10 +65,10 @@ namespace RemoteVolume.Server
         {
             if (_online)
             {
+                _client.Send(Encoding.ASCII.GetBytes("closed"));
                 _socket.Close();
 
                 _online = false;
-
                 return true;
             }
             else
@@ -64,18 +79,20 @@ namespace RemoteVolume.Server
 
         public void Accept()
         {
-#if DEBUG
-            Console.WriteLine("Accepted a user");
+#if TESTING
+            Log("Accepting");
 #endif
 
             _client = _socket.Accept();
             _userConnected = true;
+
+            Log("User connected");
         }
 
         public string Receive()
         {
-#if DEBUG
-            Console.WriteLine("Received a message");
+#if TESTING
+            Log("Receiving");
 #endif
 
             int recv_count = _client.Receive(buffer, 0, BUFFER_SIZE, SocketFlags.None);
@@ -85,15 +102,23 @@ namespace RemoteVolume.Server
 
             string received = Encoding.ASCII.GetString(recvBuf);
 
-            if (received == "disconnect")
+            if (received.Contains("disconnect"))
             {
+                Log("User disconnected");
+
                 _userConnected = false;
                 return null;
-            } else if (received == "" || received == Environment.NewLine) {
+            } else if (string.IsNullOrEmpty(received) || string.IsNullOrWhiteSpace(received)) {
                 return null;
             }
 
+            received.Replace("\r\n", "");
             return received;
+        }
+
+        public void Log(string message)
+        {
+            Console.WriteLine("[ Server ]: " + message);
         }
 
         #endregion

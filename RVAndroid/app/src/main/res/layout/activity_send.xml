@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="at.jinga.rvandroid.SendActivity">
+
+    <EditText
+        android:id="@+id/command"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Command"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="16dp" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="send"
+        android:text="Send" />
+
+    <Button
+        android:id="@+id/disconnect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="disconnect"
+        android:text="Disconnect" />
+
+</LinearLayout>

@@ -1,4 +1,4 @@
-﻿#define DEBUG
+﻿//#define TESTING
 
 using Newtonsoft.Json;
 using System;
@@ -17,37 +17,27 @@ namespace RemoteVolume.Server
             {
                 _server = new Server();
 
-                int startCounter = 0;
-
-                while (startCounter <= 10)
+                if (_server.Start())
                 {
-                    if (_server.Start())
+                    do
                     {
-                        do
+                        _server.Accept();
+
+                        while (_server.UserConnected)
                         {
-                            _server.Accept();
+                            string command = _server.Receive();
 
-                            while (_server.UserConnected)
+                            if (command != null)
                             {
-                                string command = _server.Receive();
-
-                                if (command != null)
+                                new Thread(() =>
                                 {
-                                    new Thread(() =>
-                                    {
-                                        Logic.Do(command);
-                                    }).Start();
-                                }
+                                    Logic.Do(command);
+                                }).Start();
                             }
-                        } while (_server.Online);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Server Start failed - Attempt " + ++startCounter);
-                    }
+                        }
+                    } while (_server.Online);
                 }
 
-                Console.WriteLine("Shutting down application");
                 this.Shutdown();
             }).Start();
         }

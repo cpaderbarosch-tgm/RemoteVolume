@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System.IO;
+using System.Media;
+using System.Threading;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Schema;
 
 namespace RemoteVolume.Server
@@ -7,6 +10,8 @@ namespace RemoteVolume.Server
     {
         public static void Do(string json)
         {
+            SystemSounds.Hand.Play();
+
             //Command command = JsonConvert.DeserializeObject<Command>(json);
 
             //switch (command.Action)
@@ -18,7 +23,8 @@ namespace RemoteVolume.Server
             //        VolumeControl.SetApplicationMute(command.App, (bool) !VolumeControl.GetApplicationMute(command.App));
             //        break;
             //}
-            System.Console.WriteLine(json);
+
+            System.Console.WriteLine("." + json + ".");
         }
     }
 
