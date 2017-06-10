@@ -1,5 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using RemoteVolume.Server;
 
 namespace RemoteVolume.Tests
@@ -8,11 +8,17 @@ namespace RemoteVolume.Tests
     public class Tests
     {
         [TestMethod]
-        public void ChangeVolume()
+        public void CanChangeVolume()
         {
-            Logic.Do(JsonConvert.SerializeObject(new Command(Server.Action.ChangeVolume, 10, "System Sounds")));
+            //foreach (AudioSession session in AudioUtilities.GetAllSessions())
+            //{
+            //    if (session.Process != null)
+            //    {
+            //        Console.WriteLine(session.DisplayName + ": " + AudioManager.GetApplicationVolume(session.ProcessId));
+            //    }
+            //}
 
-            Assert.AreEqual(10, VolumeControl.GetApplicationVolume("System Sounds"));
+            Console.WriteLine(AudioManager.GetApplicationVolume(11988));
         }
     }
 }
