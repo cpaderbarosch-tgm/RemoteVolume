@@ -1,7 +1,5 @@
 ﻿//#define TESTING
 
-using Newtonsoft.Json;
-using System;
 using System.Threading;
 using System.Windows;
 
