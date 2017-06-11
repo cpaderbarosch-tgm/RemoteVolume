@@ -62,6 +62,10 @@
       <Project>{0bb40a85-274a-4981-afae-741a20692aa4}</Project>
       <Name>RVServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VolumeControl\VolumeControl.vcxproj">
+      <Project>{de231e40-bb0b-47aa-a3fe-4672c2c6989f}</Project>
+      <Name>VolumeControl</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
