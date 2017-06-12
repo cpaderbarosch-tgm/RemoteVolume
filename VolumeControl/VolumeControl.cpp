@@ -1,16 +1,28 @@
 #pragma once
 
-#include "Windows.h"
-#include "Mmdeviceapi.h"
-#include "Audiopolicy.h"
+#include <windows.h>
+#include <mmdeviceapi.h>
+#include <audiopolicy.h>
+#include <endpointvolume.h>
 
 #define SAFE_RELEASE(x) if(x) { x->Release(); x = NULL; } 
 
 class VolumeControlNative {
 public:
+	static float GetMasterVolume() {
+		IAudioEndpointVolume *endpoint = GetMaster();
+		if (endpoint == NULL)
+			return NULL;
+
+		float level;
+		endpoint->GetMasterVolumeLevelScalar(&level);
+
+		return level * 100;
+	}
+
 	static float GetApplicationVolume(int pid)
 	{
-		ISimpleAudioVolume *volume = GetVolumeObject2(pid);
+		ISimpleAudioVolume *volume = GetSession(pid);
 		if (volume == NULL)
 			return NULL;
 
@@ -24,7 +36,7 @@ public:
 
 	static bool GetApplicationMute(int pid)
 	{
-		ISimpleAudioVolume *volume = GetVolumeObject2(pid);
+		ISimpleAudioVolume *volume = GetSession(pid);
 		if (volume == NULL)
 			return NULL;
 
@@ -36,106 +48,79 @@ public:
 		return mute;
 	}
 
+	static void SetMasterVolume(float level) {
+		IAudioEndpointVolume *endpoint = GetMaster();
+		if (endpoint == NULL)
+			return;
+
+		endpoint->SetMasterVolumeLevelScalar(level / 100, NULL);
+
+		SAFE_RELEASE(endpoint);
+	}
+
 	static void SetApplicationVolume(int pid, float level)
 	{
-		ISimpleAudioVolume *volume = GetVolumeObject2(pid);
+		ISimpleAudioVolume *volume = GetSession(pid);
 		if (volume == NULL)
 			return;
 
-		LPCGUID guid = NULL;
-		volume->SetMasterVolume(level / 100, guid);
+		volume->SetMasterVolume(level / 100, NULL);
 
 		SAFE_RELEASE(volume);
 	}
 
 	static void SetApplicationMute(int pid, bool mute)
 	{
-		ISimpleAudioVolume *volume = GetVolumeObject2(pid);
+		ISimpleAudioVolume *volume = GetSession(pid);
 		if (volume == NULL)
 			return;
 
-		LPCGUID guid = NULL;
-		volume->SetMute(mute, guid);
+		volume->SetMute(mute, NULL);
 
 		SAFE_RELEASE(volume);
 	}
 
 private:
-	static ISimpleAudioVolume* GetVolumeObject(int pid)
-	{
-		// get the speakers (1st render + multimedia) device
-		IMMDeviceEnumerator *deviceEnumerator = NULL;
-		IMMDevice *speakers = NULL;
-		IAudioSessionManager2 *mgr = NULL;
+	static IAudioEndpointVolume* GetMaster() {
+		HRESULT                 hr;
+		IMMDeviceEnumerator     *enumerator = NULL;
+		IMMDevice               *device = NULL;
+		IAudioEndpointVolume    *endpoint = NULL;
 
-		CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, __uuidof(IMMDeviceEnumerator), (void**)&deviceEnumerator);
+		CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_INPROC_SERVER, __uuidof(IMMDeviceEnumerator), (void**)&enumerator);
 
-		deviceEnumerator->GetDefaultAudioEndpoint(EDataFlow::eRender, ERole::eMultimedia, &speakers);
+		enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device);
 
-		// activate the session manager. we need the enumerator
-		speakers->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, NULL, (void**)&mgr);
+		device->Activate(__uuidof(IAudioEndpointVolume), CLSCTX_INPROC_SERVER, NULL, (void**)&endpoint);
 
-		// enumerate sessions for on this device
-		IAudioSessionEnumerator *sessionEnumerator = NULL;
-		mgr->GetSessionEnumerator(&sessionEnumerator);
-
-		int count = 0;
-		sessionEnumerator->GetCount(&count);
-
-		ISimpleAudioVolume *volumeControl = NULL;
-
-		for (int i = 0; i < count; i++)
-		{
-			IAudioSessionControl *ctrl;
-			IAudioSessionControl2 *ctrl2;
-			sessionEnumerator->GetSession(i, &ctrl);
-
-			ctrl->QueryInterface(__uuidof(IAudioSessionControl2), (void**)&ctrl2);
-
-			DWORD *cpid = NULL;
-			ctrl2->GetProcessId(cpid);
-
-			if (*cpid == pid)
-			{
-				ctrl2->QueryInterface(__uuidof(ISimpleAudioVolume), (void**)&volumeControl);
-				break;
-			}
-			SAFE_RELEASE(ctrl2);
-		}
-
-		SAFE_RELEASE(sessionEnumerator);
-		SAFE_RELEASE(mgr);
-		SAFE_RELEASE(speakers);
-		SAFE_RELEASE(deviceEnumerator);
-
-		return volumeControl;
+		return endpoint;
 	}
 
-	static ISimpleAudioVolume* GetVolumeObject2(int pid) {
+	static ISimpleAudioVolume* GetSession(int pid) {
 		HRESULT                 hr;
-		IMMDeviceEnumerator     *pEnumerator = NULL;
-		ISimpleAudioVolume      *pVolume = NULL;
-		IMMDevice               *pDevice = NULL;
-		IAudioSessionManager2   *pManager = NULL;
-		IAudioSessionEnumerator *pSessionEnumerator = NULL;
+		IMMDeviceEnumerator     *enumerator = NULL;
+		ISimpleAudioVolume      *volume = NULL;
+		IMMDevice               *device = NULL;
+		IAudioSessionManager2   *manager = NULL;
+		IAudioSessionEnumerator *sessionEnumerator = NULL;
 		int                      sessionCount = 0;
 
-		hr = CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL,
-			__uuidof(IMMDeviceEnumerator), (void**)&pEnumerator);
+		CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL,
+			__uuidof(IMMDeviceEnumerator), (void**)&enumerator);
 
 		// Get the default device
-		hr = pEnumerator->GetDefaultAudioEndpoint(EDataFlow::eRender,
-			ERole::eMultimedia, &pDevice);
+		enumerator->GetDefaultAudioEndpoint(EDataFlow::eRender,
+			ERole::eMultimedia, &device);
 
 		// Get the session 2 manager
-		hr = pDevice->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL,
-			NULL, (void**)&pManager);
+		device->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL,
+			NULL, (void**)&manager);
 
 		// Get the session enumerator
-		hr = pManager->GetSessionEnumerator(&pSessionEnumerator);
+		manager->GetSessionEnumerator(&sessionEnumerator);
 
 		// Get the session count
-		hr = pSessionEnumerator->GetCount(&sessionCount);
+		sessionEnumerator->GetCount(&sessionCount);
 
 		// Loop through all sessions
 		for (int i = 0; i < sessionCount; i++)
@@ -144,7 +129,7 @@ private:
 			IAudioSessionControl2 *ctrl2 = NULL;
 			DWORD processId = 0;
 
-			hr = pSessionEnumerator->GetSession(i, &ctrl);
+			hr = sessionEnumerator->GetSession(i, &ctrl);
 
 			if (FAILED(hr))
 			{
@@ -156,6 +141,7 @@ private:
 			if (FAILED(hr))
 			{
 				SAFE_RELEASE(ctrl);
+				SAFE_RELEASE(ctrl2);
 				continue;
 			}
 
@@ -176,7 +162,7 @@ private:
 				continue;
 			}
 
-			hr = ctrl2->QueryInterface(__uuidof(ISimpleAudioVolume), (void**)&pVolume);
+			hr = ctrl2->QueryInterface(__uuidof(ISimpleAudioVolume), (void**)&volume);
 
 			if (FAILED(hr))
 			{
@@ -186,6 +172,6 @@ private:
 			}
 		}
 
-		return pVolume;
+		return volume;
 	}
 };

@@ -12,6 +12,10 @@ namespace RemoteVolume
 	public ref class VolumeControl
 	{
 	public:
+		static float GetMasterVolume() {
+			return VolumeControlNative::GetMasterVolume();
+		}
+
 		static float GetApplicationVolume(int pid)
 		{
 			return VolumeControlNative::GetApplicationVolume(pid);
@@ -20,6 +24,10 @@ namespace RemoteVolume
 		static bool GetApplicationMute(int pid)
 		{
 			return VolumeControlNative::GetApplicationMute(pid);
+		}
+
+		static void SetMasterVolume(float level) {
+			VolumeControlNative::SetMasterVolume(level);
 		}
 
 		static void SetApplicationVolume(int pid, float level)
