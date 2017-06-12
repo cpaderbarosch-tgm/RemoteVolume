@@ -4,30 +4,12 @@ using Newtonsoft.Json;
 
 namespace RemoteVolume.Server
 {
-    public class Logic
-    {
-        public static void Do(string json)
-        {
-            SystemSounds.Hand.Play();
-
-            Command command = JsonConvert.DeserializeObject<Command>(json);
-
-            switch (command.Action)
-            {
-                case Action.ChangeVolume:
-                    break;
-                case Action.ToggleMute:
-                    break;
-            }
-        }
-    }
-
     public class Command
     {
         public Action Action { get; set; }
 
-        private int _volume;
-        public int Volume
+        private float _volume;
+        public float Volume
         {
             get => _volume;
             set
@@ -52,5 +34,31 @@ namespace RemoteVolume.Server
         ToggleMute,
         Mute,
         Unmute
+    }
+
+    public class AppVolume
+    {
+        public string Name { get; set; }
+        public int? Id { get; set; }
+
+        public bool Mute { get; set; }
+
+        private float _volume;
+        public float Volume
+        {
+            get => _volume;
+            set
+            {
+                if (value >= 0 && value <= 100) _volume = value;
+            }
+        }
+
+        public AppVolume(string Name, int? Id, bool Mute, float Volume)
+        {
+            this.Name = Name;
+            this.Id = Id;
+            this.Mute = Mute;
+            _volume = Volume;
+        }
     }
 }

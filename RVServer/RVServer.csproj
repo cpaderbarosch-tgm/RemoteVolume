@@ -74,7 +74,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AudioUtilities.cs" />
-    <Compile Include="Logic.cs" />
+    <Compile Include="Types.cs" />
     <Compile Include="Server.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace RemoteVolume.Server
 {
@@ -114,6 +115,17 @@ namespace RemoteVolume.Server
 
             received.Replace("\r\n", "");
             return received;
+        }
+
+        public void Send(string message)
+        {
+            if (_online && _userConnected)
+            {
+                new Thread(() =>
+                {
+                    _client.Send(Encoding.ASCII.GetBytes(message));
+                }).Start();
+            }
         }
 
         public void Log(string message)
