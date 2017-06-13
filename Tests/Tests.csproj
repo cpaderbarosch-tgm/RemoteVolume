@@ -49,6 +49,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="VolumeControl, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\C++\VolumeControl\Debug\VolumeControl.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Tests.cs" />
@@ -56,16 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\RVServer\RVServer.csproj">
-      <Project>{0bb40a85-274a-4981-afae-741a20692aa4}</Project>
-      <Name>RVServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VolumeControl\VolumeControl.vcxproj">
-      <Project>{de231e40-bb0b-47aa-a3fe-4672c2c6989f}</Project>
-      <Name>VolumeControl</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
