@@ -20,45 +20,42 @@ namespace RemoteVolume
 
         private void Application_Startup(object sender, StartupEventArgs e)
         {
-            //new Thread(() =>
-            //{
-            //    _server = new Server();
+            new Thread(() =>
+            {
+                _server = new Server();
 
-            //    if (_server.Start())
-            //    {
-            //        do
-            //        {
-            //            _server.Accept();
+                if (_server.Start())
+                {
+                    do
+                    {
+                        _server.Accept();
 
-            //            GetMixer();
-            //            _server.Send(JsonConvert.SerializeObject(_apps.ToArray()));
+                        GetMixer();
+                        _server.Send(JsonConvert.SerializeObject(_apps.ToArray()));
 
-            //            _check = new Thread(Check);
-            //            _check.Start();
+                        _check = new Thread(Check);
+                        _check.Start();
 
-            //            while (_server.UserConnected)
-            //            {
+                        while (_server.UserConnected)
+                        {
 
-            //                string command = _server.Receive();
+                            string command = _server.Receive();
 
-            //                if (command != null)
-            //                {
-            //                    new Thread(() =>
-            //                    {
-            //                        Do(JsonConvert.DeserializeObject<Command>(command));
-            //                    }).Start();
-            //                }
-            //            }
+                            if (command != null)
+                            {
+                                new Thread(() =>
+                                {
+                                    Do(JsonConvert.DeserializeObject<Command>(command));
+                                }).Start();
+                            }
+                        }
 
-            //            _check.Abort();
-            //        } while (_server.Online);
-            //    }
+                        _check.Abort();
+                    } while (_server.Online);
+                }
 
-            //    this.Shutdown();
-            //}).Start();
-
-            GetMixer();
-            Check();
+                this.Shutdown();
+            }).Start();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
@@ -128,8 +125,8 @@ namespace RemoteVolume
                         }
                     }
 
-                    //if (change) _server.Send(JsonConvert.SerializeObject(_apps.ToArray()));
-                    if (change) Console.WriteLine(JsonConvert.SerializeObject(_apps.ToArray()));
+                    if (change) _server.Send(JsonConvert.SerializeObject(_apps.ToArray()));
+                    Console.WriteLine("sent sth");
 
                     Thread.Sleep(1000);
                 }
