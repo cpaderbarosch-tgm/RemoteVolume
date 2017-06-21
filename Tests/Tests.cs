@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json;
-using RemoteVolume.Server;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using RemoteVolume;
 
 namespace RemoteVolume.Tests
 {
