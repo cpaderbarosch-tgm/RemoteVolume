@@ -546,8 +546,15 @@ namespace RemoteVolume
             {
                 if (_process == null && ProcessId != 0)
                 {
-                    if (Process.GetProcesses().Any(process => process.Id == ProcessId))
-                        _process = Process.GetProcessById(ProcessId);
+                    if (Process.GetProcesses().Any(process => process.Id == ProcessId)) {
+                        try
+                        {
+                            _process = Process.GetProcessById(ProcessId);
+                        }
+                        catch (ArgumentException) {
+                            _process = null;
+                        }
+                    }
                 }
                 return _process;
             }

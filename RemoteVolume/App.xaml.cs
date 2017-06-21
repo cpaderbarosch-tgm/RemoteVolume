@@ -38,17 +38,21 @@ namespace RemoteVolume
 
                         while (_server.UserConnected)
                         {
-
                             string command = _server.Receive();
 
                             if (command != null)
                             {
-                                new Thread(() =>
-                                {
-                                    Do(JsonConvert.DeserializeObject<Command>(command));
-                                }).Start();
+                                string[] splittedCommands = command.Split('\n');
+
+                                foreach (string tempCommand in splittedCommands) {
+                                    new Thread(() =>
+                                    {
+                                        Do(JsonConvert.DeserializeObject<Command>(tempCommand));
+                                    }).Start();
+                                }
                             }
                         }
+                        _server.Log("User disconnected");
 
                         _check.Abort();
                     } while (_server.Online);
@@ -65,13 +69,29 @@ namespace RemoteVolume
 
         public static void Do(Command command)
         {
-            SystemSounds.Hand.Play();
+            Console.WriteLine(JsonConvert.SerializeObject(command));
 
             switch (command.Action)
             {
                 case Action.ChangeVolume:
+                    if (command.Id == null)
+                    {
+                        VolumeControl.SetMasterVolume(command.Volume);
+                    }
+                    else
+                    {
+                        VolumeControl.SetApplicationVolume((int) command.Id, command.Volume);
+                    }
                     break;
-                case Action.ToggleMute:
+                case Action.ChangeMute:
+                    if (command.Id == null)
+                    {
+                        VolumeControl.SetMasterMute(command.Mute);
+                    }
+                    else
+                    {
+                        VolumeControl.SetApplicationMute((int) command.Id, command.Mute);
+                    }
                     break;
             }
         }
@@ -80,19 +100,26 @@ namespace RemoteVolume
         {
             _apps = new List<AppVolume>();
 
-            _apps.Add(new AppVolume("master", null, VolumeControl.GetMasterMute(), VolumeControl.GetMasterVolume()));
+            _apps.Add(new AppVolume { Name = "Master Volume", Id = null, Mute = VolumeControl.GetMasterMute(), Volume = VolumeControl.GetMasterVolume() });
 
             IList<AudioSession> sessions = AudioUtilities.GetAllSessions();
 
             foreach (AudioSession session in sessions)
             {
-                if (session.Process != null)
+                if (session.Process != null && session.Process.Responding)
                 {
                     int pid = session.ProcessId;
 
                     if (_apps.Find(app => app.Id == pid) == null)
                     {
-                        _apps.Add(new AppVolume(session.Process.ProcessName, pid, VolumeControl.GetApplicationMute(pid), VolumeControl.GetApplicationVolume(pid)));
+                        string pname = session.Process.MainWindowTitle;
+
+                        if (pname.Length > 20)
+                        {
+                            pname = pname.Substring(0, 17) + "...";
+                        }
+
+                        _apps.Add(new AppVolume { Name = pname, Id = pid, Mute = VolumeControl.GetApplicationMute(pid), Volume = VolumeControl.GetApplicationVolume(pid) });
                     }
                 }
             }
@@ -126,7 +153,6 @@ namespace RemoteVolume
                     }
 
                     if (change) _server.Send(JsonConvert.SerializeObject(_apps.ToArray()));
-                    Console.WriteLine("sent sth");
 
                     Thread.Sleep(1000);
                 }
