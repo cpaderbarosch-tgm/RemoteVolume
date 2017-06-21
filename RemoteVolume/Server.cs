@@ -17,7 +17,20 @@ namespace RemoteVolume
         public bool Online { get => _online; }
 
         private bool _userConnected = false;
-        public bool UserConnected { get => _userConnected; }
+        public bool UserConnected
+        {
+            get
+            {
+                if (!_userConnected) return false;
+
+                bool part1 = _client.Poll(1000, SelectMode.SelectRead);
+                bool part2 = (_client.Available == 0);
+                if (part1 && part2)
+                    return false;
+                else
+                    return true;
+            }
+        }
 
         private const int PORT = 3131;
         private const int BUFFER_SIZE = 2048;
@@ -96,25 +109,29 @@ namespace RemoteVolume
             Log("Receiving");
 #endif
 
-            int recv_count = _client.Receive(buffer, 0, BUFFER_SIZE, SocketFlags.None);
-
-            byte[] recvBuf = new byte[recv_count];
-            Array.Copy(buffer, recvBuf, recv_count);
-
-            string received = Encoding.ASCII.GetString(recvBuf);
-
-            if (received.Contains("disconnect"))
+            try
             {
-                Log("User disconnected");
+                int recv_count = _client.Receive(buffer, 0, BUFFER_SIZE, SocketFlags.None);
 
-                _userConnected = false;
-                return null;
-            } else if (string.IsNullOrEmpty(received) || string.IsNullOrWhiteSpace(received)) {
+                byte[] recvBuf = new byte[recv_count];
+                Array.Copy(buffer, recvBuf, recv_count);
+
+                string received = Encoding.ASCII.GetString(recvBuf);
+
+                if (received.Contains("disconnect"))
+                {
+                    _userConnected = false;
+                    return null;
+                }
+                else if (string.IsNullOrEmpty(received) || string.IsNullOrWhiteSpace(received))
+                {
+                    return null;
+                }
+                return received;
+            }
+            catch (SocketException) {
                 return null;
             }
-
-            received.Replace("\r\n", "");
-            return received;
         }
 
         public void Send(string message)
@@ -123,14 +140,15 @@ namespace RemoteVolume
             {
                 new Thread(() =>
                 {
-                    _client.Send(Encoding.ASCII.GetBytes(message));
+                    byte[] buffer = Encoding.ASCII.GetBytes(message + "\n");
+                    _client.Send(buffer, 0, buffer.Length, SocketFlags.None);
                 }).Start();
             }
         }
 
         public void Log(string message)
         {
-            Console.WriteLine("[ Server ]: " + message);
+            Console.WriteLine("[Server]: " + message);
         }
 
         #endregion
